@@ -166,6 +166,10 @@ async def get_hubspot_credentials(user_id: str, org_id: str) -> dict:
 # ========== Fetching HubSpot Contact Items ==========
 
 async def get_items_hubspot(credentials: dict) -> List[IntegrationItem]:
+    # Convert credentials from JSON string to dict if necessary
+    if isinstance(credentials, str):
+        credentials = json.loads(credentials)
+        
     headers = {
         'Authorization': f'Bearer {credentials["access_token"]}',
         'Content-Type': 'application/json'
@@ -181,9 +185,13 @@ async def get_items_hubspot(credentials: dict) -> List[IntegrationItem]:
         raise HTTPException(status_code=response.status_code, detail=response.text)
 
     contacts = response.json().get('results', [])
-    return [await create_integration_item_metadata_object(contact) for contact in contacts]
+    integration_items = await asyncio.gather(*[
+        create_integration_item_metadata_object(contact) for contact in contacts
+    ])
+    return integration_items
 
 # ========== Metadata Fetching ==========
+
 async def create_integration_item_metadata_object(contact_data: dict) -> IntegrationItem:
     properties = contact_data.get('properties', {})
     first_name = properties.get('firstname', '').strip()
