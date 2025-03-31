@@ -1,6 +1,15 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+
+# Redis dump file
+dump.rdb
+
+# Virtual environments
+venv/
+.env
 
 # Node.js
 node_modules/
@@ -15,6 +24,12 @@ node_modules/
 .vscode/
 .idea/
 
-# Optional: ignore environment files
-.env
+# Optional: coverage/test reports
+.coverage
+coverage.xml
+htmlcov/
+
+# OS-specific files
+Thumbs.db
+ehthumbs.db
 
